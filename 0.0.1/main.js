@@ -1,58 +1,40 @@
-function testStatus(funcName = 'all') {
-  console.log('--- JSTools Status ---');
-
-  const originalConsoleLog = console.log;
-  const originalConsoleError = console.error;
-  const originalConsoleWarn = console.warn;
-  const originalConsoleInfo = console.info;
-
-  let logOutput = '';
-  let errorOutput = '';
-  let warnOutput = '';
-  let infoOutput = '';
-
-  console.log = (msg) => { logOutput += msg; };
-  console.error = (msg) => { errorOutput += msg; };
-  console.warn = (msg) => { warnOutput += msg; };
-  console.info = (msg) => { infoOutput += msg; };
-
-  const testPrintFunction = () => {
-    console.log('Testing print function...');
-    print('Print test log', 'log');
-    print('Print test error', 'error');
-    print('Print test warn', 'warn');
-    print('Print test info', 'info');
-
-    if (logOutput.includes('] Print test log') &&
-        logOutput.includes('LOG - [') &&
-        errorOutput.includes('] Print test error') &&
-        errorOutput.includes('ERROR - [') &&
-        warnOutput.includes('] Print test warn') &&
-        warnOutput.includes('WARN - [') &&
-        infoOutput.includes('] Print test info') &&
-        infoOutput.includes('INFO - [')) {
-      console.log('Print function is working correctly.');
-    } else {
+function jstools_v1() {
+   function print(msg, type) {
+     if (type === 'error') {
+       console.error(msg);
+     } else if (type === 'log') {
+       console.log(msg);
+     } else {
+       console.error('NNOS JSTools: Print: The type parameter must be either "log" or "error".');
+     }
+   }
+  function status() {
+     console.log('--- JSTools Status ---');
+     console.log('Testing print function...');
+     const originalConsoleLog = console.log;
+     const originalConsoleError = console.error;
+     let logOutput = '';
+     let errorOutput = '';
+     console.log = (msg) => { 
+       logOutput += msg;
+     };
+     console.error = (msg) => { 
+       errorOutput += msg;
+     };
+     print('{Print test line}', 'log');
+     print('{Print test line 2}', 'error');
+     console.log = originalConsoleLog;
+     console.error = originalConsoleError;
+     if (logOutput !== '{Print test line}' || errorOutput !== '{Print test line 2}') {
       console.error('Print function has been altered.');
-    }
-  };
-
-  if (funcName === 'all' || funcName === 'print') {
-    testPrintFunction();
+     } else {
+      console.log('Print function is working correctly.');
+     }
+      console.log('Test completed.');
   }
-
-  console.log = originalConsoleLog;
-  console.error = originalConsoleError;
-  console.warn = originalConsoleWarn;
-  console.info = originalConsoleInfo;
-
-  console.log('Test completed.');
-
-  // Return the captured outputs or a summary
-  return {
-    logOutput,
-    errorOutput,
-    warnOutput,
-    infoOutput
+  return { 
+      print,
+      status
   };
 }
+const jstools = jstools_v1();
